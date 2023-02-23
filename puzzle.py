@@ -6,9 +6,6 @@ from pygame.locals import *
 # Création des constantes
 global tableau
 tableau = 3
-facile = 3
-moyen = 4
-difficile = 5
 tailleTuile = 80
 largeurFenetre = 1280
 hauteurFenetre = 768
@@ -33,8 +30,8 @@ couleurBouton = blanc
 couleurTxtBouton = noir
 couleurMessage = blanc
 
-MargeX = int((largeurFenetre - (tailleTuile * tableau + (tableau - 1))) / 2)
-MargeY = int((hauteurFenetre - (tailleTuile * tableau + (tableau - 1))) / 2)
+MargeX = int((largeurFenetre - (tailleTuile * tableau + (tableau - 1))) / 15)
+MargeY = int((hauteurFenetre - (tailleTuile * tableau + (tableau - 1))) / 5)
 
 haut = 'up'
 bas = 'down'
@@ -53,14 +50,14 @@ def main():
     fontBasic = pygame.font.Font('freesansbold.ttf', tailleFont)
 
     # Stockage des boutons d'options et leurs rectangles dans OPTIONS.
-    RAZsurface, RAZrectangle = makeText('Remise À Zéro', couleurTexte, couleurTuile, largeurFenetre - 180, hauteurFenetre - 110)
-    nouvelleSurface, nouveauRectangle = makeText('Nouvelle Partie', couleurTexte, couleurTuile, largeurFenetre - 180, hauteurFenetre - 80)
-    resoudreSurface, resoudreRectangle = makeText('Résoudre', couleurTexte, couleurTuile, largeurFenetre - 180, hauteurFenetre - 50)
-    facileSurface, facileRectangle = makeText('Facile (3x3)', couleurTexte, couleurTuile, 50, 150)
-    moyenSurface, moyenRectangle = makeText('Moyen (4x4)', couleurTexte, couleurTuile, 50, 180)
-    difficileSurface, difficileRectangle = makeText('Difficile (5x5)', couleurTexte, couleurTuile, 50, 210)
+    RAZsurface, RAZrectangle = makeText('Remise À Zéro', couleurTexte, couleurTuile, largeurFenetre - 300, hauteurFenetre - 110)
+    nouvelleSurface, nouveauRectangle = makeText('Nouvelle Partie', couleurTexte, couleurTuile, largeurFenetre - 300, hauteurFenetre - 80)
+    resoudreSurface, resoudreRectangle = makeText('Résoudre', couleurTexte, couleurTuile, largeurFenetre - 300, hauteurFenetre - 50)
+    facileSurface, facileRectangle = makeText('Facile (3x3)', couleurTexte, couleurTuile, largeurFenetre - 330, 150)
+    moyenSurface, moyenRectangle = makeText('Moyen (4x4)', couleurTexte, couleurTuile, largeurFenetre - 330, 180)
+    difficileSurface, difficileRectangle = makeText('Difficile (5x5)', couleurTexte, couleurTuile, largeurFenetre - 330, 210)
 
-    mainBoard, solutionSeq = generateNewPuzzle(80)
+    mainBoard, solutionSeq = generateNewPuzzle(20)
     SOLVEDBOARD = getStartingBoard() # Un tableau résolut est un tableau dans un état initiale.
     allMoves = [] # Liste de déplacement créé  à partir de la configuration résolu.
 
@@ -89,19 +86,28 @@ def main():
                     elif resoudreRectangle.collidepoint(event.pos):
                         resetAnimation(mainBoard, solutionSeq + allMoves)
                         allMoves = []
-                        coups = " Null"
+                        coups = "0"
                     elif facileRectangle.collidepoint(event.pos):
                         global tableau
                         tableau = 3
                         difficulte(3)
+                        mainBoard, solutionSeq = generateNewPuzzle(20)
+                        allMoves = []
+                        coups = 0
 
                     elif moyenRectangle.collidepoint(event.pos):
                         tableau = 4
                         difficulte(4)
+                        mainBoard, solutionSeq = generateNewPuzzle(60)
+                        allMoves = []
+                        coups = 0
 
                     elif difficileRectangle.collidepoint(event.pos):
                         tableau = 5
                         difficulte(5)
+                        mainBoard, solutionSeq = generateNewPuzzle(100)
+                        allMoves = []
+                        coups = 0
 
 
                 elif mainBoard != SOLVEDBOARD:
@@ -250,12 +256,12 @@ def makeText(text, color, bgcolor, top, left):
 
 def drawBoard(board, message):
     surfaceJouable.fill(couleurBG)
-    diffSurf, diffRect = makeText('Sélectionnez une difficulté.', couleurMessage, couleurBG, 20, 100)
+    diffSurf, diffRect = makeText('Sélectionnez une difficulté.', couleurMessage, couleurBG, largeurFenetre - 350, 100)
     surfaceJouable.blit(diffSurf, diffRect)
-    scoreSurf, scoreRect = makeText('Score :'+ str(coups), couleurMessage, couleurBG, 600, 10)
+    scoreSurf, scoreRect = makeText('Nombre de coups joués : '+ str(coups), couleurMessage, couleurBG, 100, 700)
     surfaceJouable.blit(scoreSurf, scoreRect)
     if message:
-        textSurf, textRect = makeText(message, couleurMessage, couleurBG, 5, 5)
+        textSurf, textRect = makeText(message, couleurMessage, couleurBG, 15, 30)
         surfaceJouable.blit(textSurf, textRect)
 
 
