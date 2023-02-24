@@ -41,9 +41,10 @@ droite = 'right'
 def main():
     # Création de valeur global malgrés la mauvaise pratique d'en créé plus d'une.
     global horlogeIPS, surfaceJouable, fontBasic, RAZsurface, RAZrectangle, nouvelleSurface, nouveauRectangle, resoudreSurface, resoudreRectangle
-    global facileRectangle, facileSurface, moyenRectangle, moyenSurface, difficileRectangle, difficileSurface, coups
+    global facileRectangle, facileSurface, moyenRectangle, moyenSurface, difficileRectangle, difficileSurface, coups, derniercoup
     pygame.init()
     coups = 0
+    derniercoup = 0
     horlogeIPS = pygame.time.Clock()
     surfaceJouable = pygame.display.set_mode((largeurFenetre, hauteurFenetre))
     pygame.display.set_caption('The Cake Is A Lie')
@@ -66,6 +67,8 @@ def main():
         msg = 'Appuyez sur une touche fléchée pour déplacer une case.'
         if mainBoard == SOLVEDBOARD:
             msg = 'Résolut !!'
+            derniercoup = coups
+
 
         drawBoard(mainBoard, msg)
 
@@ -125,19 +128,21 @@ def main():
                         slideTo = bas
                         coups += 1
 
-            elif event.type == KEYUP:
-                if event.key in (K_LEFT, K_q, K_a) and isValidMove(mainBoard, gauche):
-                    slideTo = gauche
-                    coups += 1
-                elif event.key in (K_RIGHT, K_d) and isValidMove(mainBoard, droite):
-                    slideTo = droite
-                    coups += 1
-                elif event.key in (K_UP, K_z, K_w) and isValidMove(mainBoard, haut):
-                    slideTo = haut
-                    coups += 1
-                elif event.key in (K_DOWN, K_s) and isValidMove(mainBoard, bas):
-                    slideTo = bas
-                    coups += 1
+
+            elif mainBoard != SOLVEDBOARD:
+                if event.type == KEYUP:
+                    if event.key in (K_LEFT, K_q, K_a) and isValidMove(mainBoard, gauche):
+                        slideTo = gauche
+                        coups += 1
+                    elif event.key in (K_RIGHT, K_d) and isValidMove(mainBoard, droite):
+                        slideTo = droite
+                        coups += 1
+                    elif event.key in (K_UP, K_z, K_w) and isValidMove(mainBoard, haut):
+                        slideTo = haut
+                        coups += 1
+                    elif event.key in (K_DOWN, K_s) and isValidMove(mainBoard, bas):
+                        slideTo = bas
+                        coups += 1
 
         if slideTo:
             slideAnimation(mainBoard, slideTo, 'Appuyez sur une touche fléchée pour déplacer une case.', 8)
@@ -258,6 +263,8 @@ def drawBoard(board, message):
     surfaceJouable.fill(couleurBG)
     diffSurf, diffRect = makeText('Sélectionnez une difficulté.', couleurMessage, couleurBG, largeurFenetre - 350, 100)
     surfaceJouable.blit(diffSurf, diffRect)
+    lastscoreSurf, lastscoreRect = makeText('Dernière partie : ' + str(derniercoup) + ' coups joués', couleurMessage, couleurBG, 100, 600)
+    surfaceJouable.blit(lastscoreSurf, lastscoreRect)
     scoreSurf, scoreRect = makeText('Nombre de coups joués : '+ str(coups), couleurMessage, couleurBG, 100, 700)
     surfaceJouable.blit(scoreSurf, scoreRect)
     if message:
